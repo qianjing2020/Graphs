@@ -168,25 +168,46 @@ class Graph:
                 self.dft_recursive(v, visited)
 
 
-    def dfs_recursive(self, starting_vertex, destination_vertex, path = []):
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited=None, path=None): 
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
         depth-first order. Use recursion.
         """
-        # append vertex to path after initial call
+        # note we don't want to share path object for recursion calls, we want individual path object for each vertex. 
         
-        path += [starting_vertex]      
-        # base case destination already in path 
-        if path[-1] == destination_vertex:
+        # store visited vertex in a set
+        if visited is None:
+            visited = set()
+        # initialize path
+        if path is None:
+            path = []
+        # subtly makes a copy of the path and added the starting vertex of the current call
+        path += [starting_vertex]
+        # initialize visited and path
+        visited.add(starting_vertex)
+        
+        # speical case: no staring or destination vertex in graph, return None:
+        if (starting_vertex not in self.vertices) or (destination_vertex not in self.vertices):
+            return None
+
+        # base case: destination in path, return the path
+        if starting_vertex == destination_vertex:
             return path
 
-        # otherwise, exhaust all neighbors
-        for v in self.get_neighbors(starting_vertex):
+        # otherwise, start at its neighbour for the recursive search
+    
+        for neighbor in self.get_neighbors(starting_vertex):
             # if neighbor has not been visited, search neighbor resursively add neighbor to path
-            if v not in path:
-                path = self.dfs_recursive(v, destination_vertex, path)
-            return path  
+            if neighbor not in visited:
+                new_path = self.dfs_recursive(
+                    neighbor, destination_vertex, visited, path)
+                if new_path is not None:
+                    return new_path
+            # else neighbor has been visited, do nothing
+                        
+        # if all neighbor visited for current vertex and curren vertex is not destination vertex, return None
+        return None
             
 
 if __name__ == '__main__':
@@ -258,4 +279,6 @@ if __name__ == '__main__':
     # '''
     print(graph.dfs(1, 6))
     
+    print('***********'*3)
+
     print(graph.dfs_recursive(1, 6))
