@@ -182,10 +182,10 @@ class Graph:
         # initialize path
         if path is None:
             path = []
-        # subtly makes a copy of the path and added the starting vertex of the current call
-        path += [starting_vertex]
         # initialize visited and path
         visited.add(starting_vertex)
+        # subtly makes a copy of the path and added the starting vertex of the current call
+        path += [starting_vertex]
         
         # speical case: no staring or destination vertex in graph, return None:
         if (starting_vertex not in self.vertices) or (destination_vertex not in self.vertices):
